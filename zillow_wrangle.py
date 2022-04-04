@@ -169,5 +169,25 @@ def prepare_zillow(df):
     
     # imputing continuous columns with median value
     df = impute(df, 'median', ['finishedsquarefeet12', 'lotsizesquarefeet', 'structuretaxvaluedollarcnt', 'taxvaluedollarcnt', 'landtaxvaluedollarcnt', 'taxamount'])
-    
+
+    # Creating a new column that coverts fips code to county name '6111.0' = 'Ventura', '6037.0' = 'Los Angeles', '6059.0' = 'Orange'
+    # convert fips to a string
+    df['fips'] = df['fips'].astype(str)
+    # create new column with county name
+    df['county'] = df['fips'].replace({'6111.0': 'Ventura', '6037.0': 'Los Angeles', '6059.0': 'Orange'})
+    # convert fips to a float
+    df['fips'] = df['fips'].astype(float)
     return df
+
+def split_zillow(df, target):
+    ''' split zillow data into training, validate, and test sets
+        then splits for X(features) and y(target)'''
+    # split into 20% test and 80% training_validate
+    train_validate, test = train_test_split(df, test_size=.2, random_state=42)
+    # split training_validate into 70% train and 30% validation
+    train, validate = train_test_split(train_validate, test_size=.3, random_state=42)
+    # split train into X(features) and y(target)
+    X_train, y_train = train.drop(columns=[target]), train[target]
+    X_validate, y_validate = validate.drop(columns=[target]), validate[target]
+    X_test, y_test = test.drop(columns=[target]), test[target]
+    return train, validate, test, X_train, y_train, X_validate, y_validate, X_test, y_test
