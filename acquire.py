@@ -58,3 +58,14 @@ def get_telco_data(use_cache=True):
     telco_data.to_csv(filename)
     return telco_data
 
+def get_mall_data(use_cache=True):
+    filename = "mall_customers.csv"
+    if os.path.isfile(filename) and use_cache:
+        print("Let me get that for you...")
+        return pd.read_csv(filename)
+    print("Sorry, nothing on file, let me create one for you...")
+    data = 'mall_customers'
+    url = f'mysql+pymysql://{user}:{password}@{host}/{data}'
+    mall_data = pd.read_sql('SELECT * FROM customers', url)
+    mall_data.to_csv(filename)
+    return mall_data
