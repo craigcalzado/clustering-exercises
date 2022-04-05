@@ -153,8 +153,11 @@ def prepare_zillow(df):
     df = df[(df.propertylandusedesc == 'Single Family Residential') |
           (df.propertylandusedesc == 'Mobile Home') |
           (df.propertylandusedesc == 'Manufactured, Modular, Prefabricated Homes') |
-          (df.propertylandusedesc == 'Townhouse')]
-    
+          (df.propertylandusedesc == 'Townhouse') |
+          (df.propertylandusedesc == 'Cluster Home')
+          |(df.propertylandusedesc == 'Condominium') 
+          ]
+
     # remove outliers in bed count, bath count, and area to better target single unit properties
     df = remove_outliers(df, 1.5, ['calculatedfinishedsquarefeet', 'bedroomcnt', 'bathroomcnt'])
     
